@@ -25,7 +25,12 @@ from os.path import splitext
 {% if cookiecutter.c_extension_support not in ['no', 'cffi'] -%}
 from setuptools import Extension
 {% endif -%}
+
+{%- if cookiecutter.named_package == 'yes' %}
+from setuptools import find_namespace_packages
+{%- else %}
 from setuptools import find_packages
+{% endif -%}
 from setuptools import setup
 {%- if cookiecutter.c_extension_support != 'no' %}
 {%- if cookiecutter.c_extension_optional == 'yes' %}
@@ -108,7 +113,11 @@ def read(*names, **kwargs):
 
 
 setup(
+{%- if cookiecutter.named_package == 'yes' %}
+    name='{{ cookiecutter.named_package_name }}'-'{{ cookiecutter.distribution_name }}',
+{%- else %}
     name='{{ cookiecutter.distribution_name }}',
+{%- endif %}
 {%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
     use_scm_version={
         'local_scheme': 'dirty-tag',
@@ -140,7 +149,11 @@ setup(
 {%- else %}
     url='https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}',
 {%- endif %}
+{%- if cookiecutter.named_package == 'yes' %}
+    packages=find_namespace_packages(where='src', include=['{{ cookiecutter.named_package_name }}*']),
+{%- else %}
     packages=find_packages('src'),
+{%- endif %}
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     include_package_data=True,

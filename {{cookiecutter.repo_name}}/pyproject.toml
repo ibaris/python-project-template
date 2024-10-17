@@ -40,13 +40,19 @@ push = true
 "README.md" = [
     "{version}",
 ]
+{%- if cookiecutter.named_package == 'yes' %}
 "src/{{cookiecutter.package_name}}/__init__.py" = [
     "{version}",
 ]
-"docs/conf.py" = [
+{%- else %}
+"{{cookiecutter.named_package_name}}/src/{{cookiecutter.package_name}}/__init__.py" = [
     "{version}",
 ]
-"docs/readme.rst" = [
+{%- endif %}
+"resources/docs/conf.py" = [
+    "{version}",
+]
+"resources/docs/readme.rst" = [
     "{version}",
 ]
 

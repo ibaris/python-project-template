@@ -10,6 +10,8 @@
 	"repo_main_branch": "main",
 	"package_name": "{{ cookiecutter.project_name|lower|replace(' ','_')|replace('-','_') }}",
 	"distribution_name": "{{ cookiecutter.package_name|replace('_','-') }}",
+	"named_package": ["no", "yes"],
+	"named_package_name": "",
 	"project_env_file": "{{ cookiecutter.package_name }}",
 	"project_env_name": "{{ cookiecutter.project_env_file }}",
 	"project_short_description": "An example package. Generated with cookiecutter-pylibrary.",
