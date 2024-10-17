@@ -1,0 +1,58 @@
+[build-system]
+requires = [
+    "setuptools>=30.3.0",
+    "wheel",
+{%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
+    "setuptools_scm>=3.3.1",
+{%- endif %}
+{%- if cookiecutter.c_extension_support == 'cffi' %}
+    "cffi>=1.0.0",
+{%- endif %}
+]
+{%- if cookiecutter.pre_commit_formatter == 'black' %}
+
+[tool.black]
+line-length = 140
+target-version = ['py39']
+skip-string-normalization = true
+{%- elif cookiecutter.pre_commit_formatter == 'blue' %}
+
+[tool.blue]
+line-length = 140
+target-version = ['py38']
+{%- endif %}
+
+[tool.bumpver]
+current_version = "{{cookiecutter.version}}"
+version_pattern = "YYYY.MM.PATCH[PYTAGNUM]"
+commit_message = "ver({{cookiecutter.package_name}}): bump version from {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
+"setup.py" = [
+    "{version}",
+]
+"README.md" = [
+    "{version}",
+]
+"src/{{cookiecutter.package_name}}/__init__.py" = [
+    "{version}",
+]
+"docs/conf.py" = [
+    "{version}",
+]
+"docs/readme.rst" = [
+    "{version}",
+]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+line_length = 110
+profile = "black"
