@@ -31,6 +31,7 @@ from setuptools import find_namespace_packages
 {%- else %}
 from setuptools import find_packages
 {% endif -%}
+
 from setuptools import setup
 {%- if cookiecutter.c_extension_support != 'no' %}
 {%- if cookiecutter.c_extension_optional == 'yes' %}
@@ -114,7 +115,7 @@ def read(*names, **kwargs):
 
 setup(
 {%- if cookiecutter.named_package == 'yes' %}
-    name='{{ cookiecutter.named_package_name }}'-'{{ cookiecutter.distribution_name }}',
+    name='{{ cookiecutter.named_package_name }}-{{ cookiecutter.distribution_name }}',
 {%- else %}
     name='{{ cookiecutter.distribution_name }}',
 {%- endif %}
@@ -150,7 +151,7 @@ setup(
     url='https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}',
 {%- endif %}
 {%- if cookiecutter.named_package == 'yes' %}
-    packages=find_namespace_packages(where='src', include=['{{ cookiecutter.named_package_name }}*']),
+    packages=find_namespace_packages(where='src', include=['{{ cookiecutter.named_package_name }}.*']),
 {%- else %}
     packages=find_packages('src'),
 {%- endif %}

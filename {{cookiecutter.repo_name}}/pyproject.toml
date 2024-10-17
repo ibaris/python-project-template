@@ -24,7 +24,7 @@ target-version = ['py38']
 
 [tool.bumpver]
 current_version = "{{cookiecutter.version}}"
-version_pattern = "YYYY.MM.PATCH[PYTAGNUM]"
+version_pattern = "YYYY.MM.PATCH"
 commit_message = "ver({{cookiecutter.package_name}}): bump version from {old_version} -> {new_version}"
 commit = true
 tag = true
@@ -40,12 +40,12 @@ push = true
 "README.md" = [
     "{version}",
 ]
-{%- if cookiecutter.named_package == 'yes' %}
+{%- if cookiecutter.named_package == 'no' %}
 "src/{{cookiecutter.package_name}}/__init__.py" = [
     "{version}",
 ]
 {%- else %}
-"{{cookiecutter.named_package_name}}/src/{{cookiecutter.package_name}}/__init__.py" = [
+"src/{{cookiecutter.named_package_name}}/{{cookiecutter.package_name}}/__init__.py" = [
     "{version}",
 ]
 {%- endif %}
