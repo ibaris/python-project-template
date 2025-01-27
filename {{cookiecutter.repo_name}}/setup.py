@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
+from setuptools import setup
 import io
 {%- if cookiecutter.c_extension_support in ['yes', 'cython', 'cffi'] %}
 import os
@@ -32,7 +33,6 @@ from setuptools import find_namespace_packages
 from setuptools import find_packages
 {% endif -%}
 
-from setuptools import setup
 {%- if cookiecutter.c_extension_support != 'no' %}
 {%- if cookiecutter.c_extension_optional == 'yes' %}
 from setuptools.command.build_ext import build_ext
