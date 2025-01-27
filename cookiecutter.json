@@ -19,7 +19,7 @@
 	"release_date": "today",
 	"year_from": "{% now 'utc', '%Y' %}",
 	"year_to": "{% now 'utc', '%Y' %}",
-	"version": "{% now 'utc', '%Y' %}.{% now 'utc', '%M' %}.0",
+	"version": "{% now 'utc', '%Y' %}.{% now 'utc', '%m' %}.0",
 	"license": [
 		"no",
 		"BSD 2-Clause License",
