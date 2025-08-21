@@ -13,8 +13,8 @@ When `reporting a bug <https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiec
 
 ## Documentation improvements
 
-{{ cookiecutter.project_name }} could always use more documentation, whether as part of the
-official {{ cookiecutter.project_name }} docs, in docstrings, or even on the web in blog posts,
+{{ cookiecutter.repo_name }} could always use more documentation, whether as part of the
+official {{ cookiecutter.repo_name }} docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 ## Feature requests and feedback

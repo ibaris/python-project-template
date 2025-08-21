@@ -1,4 +1,4 @@
-name: {{cookiecutter.project_env_name}}
+name: { { cookiecutter.package_name } }
 channels:
   - defaults
   - anaconda
@@ -28,4 +28,3 @@ dependencies:
   - pip
   - pip:
       - pyyaml
-      - tox

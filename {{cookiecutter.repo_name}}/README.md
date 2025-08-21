@@ -1,9 +1,9 @@
 <div align="center">
     <p>
-        <img src="{{ cookiecutter.project_logo }}">
+        <img src="./data/logo/logo.png">
     </p>
 
-<h2 align="center">{{ cookiecutter.project_name }}</h4>
+<h2 align="center">{{ cookiecutter.repo_name }}</h4>
 <h4 align="center">{{ cookiecutter.project_short_description }}</h4>
 <h5 align="center">[v-{{ cookiecutter.version }}]</h5>
 
@@ -26,24 +26,24 @@
 # Installation
 
 ```cmd
-> pip install {{ cookiecutter.distribution_name }}
+> pip install {{ cookiecutter.package_name }}
 ```
 
 You can also install the stable version with
 
 ```cmd
 {% if cookiecutter.repo_hosting_domain == "github.com" %}
->>> pip install https://github.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/archive/{{ cookiecutter.repo_main_branch }}.zip
+>>> pip install https://github.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/archive/main.zip
 {% elif cookiecutter.repo_hosting_domain == "gitlab.com" %}
->>> pip install https://gitlab.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/-/archive/{{ cookiecutter.repo_main_branch }}/{{ cookiecutter.repo_name }}-{{ cookiecutter.repo_main_branch }}.zip
+>>> pip install https://gitlab.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/-/archive/main/{{ cookiecutter.repo_name }}-main.zip
 {% elif cookiecutter.repo_hosting_domain == "gitlab.dlr.de" %}
->>> pip install https://gitlab.dlr.de/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/-/archive/{{ cookiecutter.repo_main_branch }}/{{ cookiecutter.repo_name }}-{{ cookiecutter.repo_main_branch }}.zip
+>>> pip install https://gitlab.dlr.de/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/-/archive/main/{{ cookiecutter.repo_name }}-main.zip
 {% else %}
->>> pip install git+ssh://git@{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}.git@{{ cookiecutter.repo_main_branch }}
+>>> pip install git+ssh://git@{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}.git@main
 {%- endif %}
 ```
 
-To install the in-development version, change the branch name {{ cookiecutter.repo_main_branch }} to the other
+To install the in-development version, change the branch name main to the other
 available branch names.
 
 # Documentation

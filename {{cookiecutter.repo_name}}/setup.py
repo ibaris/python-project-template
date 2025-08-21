@@ -34,9 +34,7 @@ from setuptools import find_packages
 {% endif -%}
 
 {%- if cookiecutter.c_extension_support != 'no' %}
-{%- if cookiecutter.c_extension_optional == 'yes' %}
 from setuptools.command.build_ext import build_ext
-{%- endif %}
 from setuptools.dist import Distribution
 {%- if cookiecutter.c_extension_support == 'cython' %}
 
@@ -68,7 +66,6 @@ else:
     CFLAGS = ''
     LFLAGS = ''
 {%- endif %}
-{%- if cookiecutter.c_extension_optional == 'yes' %}
 
 CFLAGS += ' /openmp' if platform.system() == 'Windows' else '-fopenmp'
 LFLAGS += '' if platform.system() == 'Windows' else '-fopenmp'
@@ -97,7 +94,6 @@ class OptionalBuildExt(build_ext):
         print('')
         print('    ' + repr(e))
         print('*' * 80)
-{%- endif %}
 
 
 class BinaryDistribution(Distribution):
@@ -115,19 +111,11 @@ def read(*names, **kwargs):
 
 setup(
 {%- if cookiecutter.named_package == 'yes' %}
-    name='{{ cookiecutter.named_package_name }}-{{ cookiecutter.distribution_name }}',
+    name='{{ cookiecutter.named_package_name }}-{{ cookiecutter.package_name }}',
 {%- else %}
-    name='{{ cookiecutter.distribution_name }}',
+    name='{{ cookiecutter.package_name }}',
 {%- endif %}
-{%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
-    use_scm_version={
-        'local_scheme': 'dirty-tag',
-        'write_to': 'src/{{ cookiecutter.package_name }}/_version.py',
-        'fallback_version': '{{ cookiecutter.version }}',
-    },
-{%- else %}
     version='{{ cookiecutter.version }}',
-{%- endif %}
 {%- if cookiecutter.license != "no" %}
     license='{{ {
         "BSD 2-Clause License": "BSD-2-Clause",
@@ -199,18 +187,12 @@ setup(
         # 'Programming Language :: Python :: Implementation :: Jython',
         # 'Programming Language :: Python :: Implementation :: Stackless',
         'Topic :: Utilities',
-{%- if cookiecutter.pypi_disable_upload == "yes" %}
         'Private :: Do Not Upload',
-{%- endif %}
     ],
 {%- if cookiecutter.repo_hosting_domain != "no" %}
     project_urls={
-{%- if cookiecutter.sphinx_docs == "yes" %}
         'Documentation': '{{ cookiecutter.sphinx_docs_hosting }}',
         'Changelog': '{{ cookiecutter.sphinx_docs_hosting }}en/latest/changelog.html',
-{%- else %}
-        'Changelog': 'https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/blob/master/CHANGELOG.rst',
-{%- endif %}
         'Issue Tracker': 'https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/issues',
     },
 {%- endif %}
@@ -219,9 +201,6 @@ setup(
     ],
     python_requires='>=3.7',
     install_requires=[
-{%- if cookiecutter.command_line_interface == 'click' %}
-        'click',
-{%- endif %}
 {%- if cookiecutter.c_extension_support == 'cffi' %}
         'cffi>=1.0.0',
 {%- endif %}
@@ -232,12 +211,6 @@ setup(
         #   'rst': ['docutils>=0.11'],
         #   ':python_version=="2.6"': ['argparse'],
     },
-{%- set setup_requires_interior %}
-{%- if cookiecutter.setup_py_uses_pytest_runner == 'yes' %}
-        'pytest-runner',{% endif %}
-{%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
-        'setuptools_scm>=3.3.1',{% endif %}
-{%- endset %}
 {%- if cookiecutter.c_extension_support == 'cython' %}
     setup_requires=[{{ setup_requires_interior }}
         'cython',
@@ -258,14 +231,12 @@ setup(
 {%- if cookiecutter.command_line_interface != 'no' %}
     entry_points={
         'console_scripts': [
-            '{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main',
+            '{{ cookiecutter.package_name }} = {{ cookiecutter.package_name }}.cli:main',
         ]
     },
 {%- endif %}
 {%- if cookiecutter.c_extension_support != 'no' -%}
-{%- if cookiecutter.c_extension_optional == 'yes' %}
     cmdclass={'build_ext': OptionalBuildExt},
-{%- endif %}
 {%- if cookiecutter.c_extension_support == 'cffi' %}
     cffi_modules=[i + ':ffi' for i in glob('src/*/_*_build.py')],
 {%- else %}

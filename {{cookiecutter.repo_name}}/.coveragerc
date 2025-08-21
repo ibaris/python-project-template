@@ -1,29 +1,17 @@
 [paths]
-{%- if cookiecutter.test_matrix_separate_coverage == 'yes' %}
-source = src
-{%- else %}
 source =
    src
    */site-packages
-{%- endif %}
 
 [run]
 branch = true
-{%- if cookiecutter.test_matrix_separate_coverage == 'yes' %}
-source =
-    src
-    tests
-{%- else %}
-source =
-    {{ cookiecutter.package_name }}
-    tests
-{%- endif %}
+
 parallel = true
 omit = 
     tests/*
     */__init__.py
     */__main__.py
-{%- if cookiecutter.c_extension_support == 'cython' and cookiecutter.test_matrix_separate_coverage == 'no' %}
+{%- if cookiecutter.c_extension_support == 'cython' %}
 plugins = Cython.Coverage
 {%- endif %}
 

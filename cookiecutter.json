@@ -2,24 +2,23 @@
 	"full_name": "",
 	"email": "",
 	"website": "",
-	"project_name": "Nameless",
-	"repo_name": "{{ cookiecutter.project_name|lower|replace(' ','-') }}",
-	"repo_hosting": ["github.com", "gitlab.com", "other domain not listed"],
+	"package_name": "",
+	"repo_name": "{{ cookiecutter.package_name|lower|replace(' ','-') }}",
+	"repo_hosting": [
+		"github.com",
+		"gitlab.com",
+		"other domain not listed"
+	],
 	"repo_hosting_domain": "{{ cookiecutter.repo_hosting if cookiecutter.repo_hosting != 'other domain not listed' else '' }}",
 	"repo_username": "",
-	"repo_main_branch": "main",
-	"package_name": "{{ cookiecutter.project_name|lower|replace(' ','_')|replace('-','_') }}",
-	"distribution_name": "{{ cookiecutter.package_name|replace('_','-') }}",
-	"named_package": ["no", "yes"],
+	"named_package": [
+		"no",
+		"yes"
+	],
 	"named_package_name": "",
-	"project_env_file": "{{ cookiecutter.package_name }}",
-	"project_env_name": "{{ cookiecutter.project_env_file }}",
 	"project_short_description": "An example package. Generated with cookiecutter-pylibrary.",
-	"project_logo": "./data/logo/logo.png",
-	"release_date": "today",
-	"year_from": "{% now 'utc', '%Y' %}",
-	"year_to": "{% now 'utc', '%Y' %}",
-	"version": "{% now 'utc', '%Y' %}.{% now 'utc', '%m' %}.0",
+	"year": "{% now 'utc', '%Y' %}",
+	"version": "{% set y %}{% now 'utc', '%Y' %}{% endset %}{% set m %}{% now 'utc', '%m' %}{% endset %}{{ y }}.{{ m|int }}.0.0",
 	"license": [
 		"no",
 		"BSD 2-Clause License",
@@ -32,26 +31,12 @@
 		"GNU Lesser General Public License v2.1 or later (LGPLv2+)",
 		"GNU Lesser General Public License v2.1 (LGPLv2)"
 	],
-	"c_extension_support": ["cython", "yes", "no", "cffi"],
-	"c_extension_optional": ["no", "yes"],
-	"c_extension_module": "_{{ cookiecutter.package_name }}",
-	"c_extension_function": "longest",
-	"c_extension_test_pypi": ["no", "yes"],
-	"c_extension_test_pypi_username": "{{ cookiecutter.repo_username }}",
-	"include_docker": ["yes", "no"],
-	"test_matrix_configurator": ["no", "yes"],
-	"test_matrix_separate_coverage": ["no", "yes"],
-	"setup_py_uses_pytest_runner": ["no", "yes"],
-	"setup_py_uses_setuptools_scm": ["no", "yes"],
-	"pypi_disable_upload": ["yes", "no"],
-	"allow_tests_inside_package": ["no", "yes"],
-	"linter": ["flake8", "pylama"],
-	"pre_commit": ["yes", "no"],
-	"pre_commit_formatter": ["black", "yapf", "blue", "no"],
-	"command_line_interface": ["argparse", "plain", "click", "no"],
-	"command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",
-	"codecov": ["yes", "no"],
-	"sphinx_docs": ["yes", "no"],
+	"c_extension_support": [
+		"cython",
+		"yes",
+		"no",
+		"cffi"
+	],
 	"sphinx_theme": [
 		"sphinx-rtd-theme",
 		"python-docs-theme",
@@ -60,12 +45,8 @@
 		"furo",
 		"pydata-sphinx-theme"
 	],
-	"sphinx_doctest": ["no", "yes"],
 	"sphinx_docs_hosting": "https://{{ cookiecutter.repo_name|replace('.', '') }}.readthedocs.io/",
-	"appveyor": ["no", "yes"],
-	"github_actions": ["yes", "no"],
-	"github_actions_osx": ["no", "yes"],
-	"github_actions_windows": ["yes", "no"],
-
-	"_extensions": ["jinja2_time.TimeExtension"]
+	"_extensions": [
+		"jinja2_time.TimeExtension"
+	]
 }

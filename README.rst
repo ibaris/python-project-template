@@ -139,7 +139,7 @@ You will be asked for these fields:
             "nameless"
       - Python package name (whatever you would import).
 
-    * - ``distribution_name``
+    * - ``package_name``
       - .. code:: python
 
             "nameless"
