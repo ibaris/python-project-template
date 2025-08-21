@@ -21,7 +21,7 @@ source_suffix = ['.rst']
 
 master_doc = 'index'
 project = {{ '{0!r}'.format(cookiecutter.repo_name) }}
-year = '{% if cookiecutter.year == cookiecutter.year_to %}{{ cookiecutter.year }}{% else %}{{ cookiecutter.year }}-{{ cookiecutter.year_to }}{% endif %}'
+year = '{% if cookiecutter.year == cookiecutter.year %}{{ cookiecutter.year }}{% else %}{{ cookiecutter.year }}-{{ cookiecutter.year }}{% endif %}'
 author = {{ '{0!r}'.format(cookiecutter.full_name) }}
 copyright = '{0}, {1}'.format(year, author)
 version = release = {{ '{0!r}'.format(cookiecutter.version) }}

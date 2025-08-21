@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+
+
 from setuptools import setup
 import io
 {%- if cookiecutter.c_extension_support in ['yes', 'cython', 'cffi'] %}
@@ -212,31 +212,27 @@ setup(
         #   ':python_version=="2.6"': ['argparse'],
     },
 {%- if cookiecutter.c_extension_support == 'cython' %}
-    setup_requires=[{{ setup_requires_interior }}
+    setup_requires=[
         'cython',
-    ] if Cython else [{{ setup_requires_interior }}
+    ] if Cython else [
     ],
 {%- elif cookiecutter.c_extension_support == 'cffi' %}
     # We only require CFFI when compiling.
     # pyproject.toml does not support requirements only for some build actions,
     # but we can do it in setup.py.
-    setup_requires=[{{ setup_requires_interior }}
+    setup_requires=[
         'cffi>=1.0.0',
-    ] if any(i.startswith('build') or i.startswith('bdist') for i in sys.argv) else [{{setup_requires_interior}}
+    ] if any(i.startswith('build') or i.startswith('bdist') for i in sys.argv) else [
     ],
-{%- elif setup_requires_interior.strip() %}
-    setup_requires=[{{ setup_requires_interior }}
-    ],
-{%- endif -%}
-{%- if cookiecutter.command_line_interface != 'no' %}
+{%- endif %}
     entry_points={
         'console_scripts': [
             '{{ cookiecutter.package_name }} = {{ cookiecutter.package_name }}.cli:main',
         ]
     },
-{%- endif %}
 {%- if cookiecutter.c_extension_support != 'no' -%}
     cmdclass={'build_ext': OptionalBuildExt},
+{%- endif %}
 {%- if cookiecutter.c_extension_support == 'cffi' %}
     cffi_modules=[i + ':ffi' for i in glob('src/*/_*_build.py')],
 {%- else %}
@@ -244,6 +240,7 @@ setup(
         Extension(
             splitext(relpath(path, 'src').replace(os.sep, '.'))[0],
             sources=[path],
+{%- endif %}
 {%- if cookiecutter.c_extension_support in ['yes', 'cython'] %}
             extra_compile_args=CFLAGS.split(),
             extra_link_args=LFLAGS.split(),
@@ -256,6 +253,4 @@ setup(
 {%- else %} '*.c'{% endif %}))
     ],
     distclass=BinaryDistribution,
-{%- endif %}
-{%- endif %}
 )

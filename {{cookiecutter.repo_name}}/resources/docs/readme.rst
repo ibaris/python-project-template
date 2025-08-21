@@ -31,7 +31,6 @@ Overview
 {% endif %}
 
 .. end-badges
-{% endif %}
 {{ cookiecutter.project_short_description|wordwrap(119) }}
 {% if cookiecutter.license != "no" %}
 * Free software: {{ cookiecutter.license }}
