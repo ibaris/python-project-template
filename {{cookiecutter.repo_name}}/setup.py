@@ -210,20 +210,20 @@ setup(
         #   ':python_version=="2.6"': ['argparse'],
     },
 {%- if cookiecutter.c_extension_support == 'cython' %}
-    setup_requires=[{{ setup_requires_interior }}
+    setup_requires=[
         'cython',
-    ] if Cython else [{{ setup_requires_interior }}
+    ] if Cython else [
     ],
 {%- elif cookiecutter.c_extension_support == 'cffi' %}
     # We only require CFFI when compiling.
     # pyproject.toml does not support requirements only for some build actions,
     # but we can do it in setup.py.
-    setup_requires=[{{ setup_requires_interior }}
+    setup_requires=[
         'cffi>=1.0.0',
-    ] if any(i.startswith('build') or i.startswith('bdist') for i in sys.argv) else [{{setup_requires_interior}}
+    ] if any(i.startswith('build') or i.startswith('bdist') for i in sys.argv) else [
     ],
-{%- elif setup_requires_interior.strip() %}
-    setup_requires=[{{ setup_requires_interior }}
+{%- else %}
+    setup_requires=[
     ],
 {%- endif -%}
 {%- if cookiecutter.command_line_interface != 'no' %}
