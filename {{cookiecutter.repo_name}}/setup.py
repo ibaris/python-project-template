@@ -1,4 +1,11 @@
+"""
+Setup
+=====
+*Created on 22 by bari_is*
+*Copyright (C) 2025*
+*For COPYING and LICENSE details, please refer to the LICENSE file*
 
+"""
 
 from setuptools import setup
 import io

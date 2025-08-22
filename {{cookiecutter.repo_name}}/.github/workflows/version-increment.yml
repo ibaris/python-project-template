@@ -6,7 +6,7 @@ name: Version Increment
 on:
   push:
     branches:
-      - master
+      - main
       - release-candidate
 
 jobs:
