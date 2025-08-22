@@ -229,7 +229,7 @@ setup(
     entry_points={
         'console_scripts': [
             '{{ cookiecutter.package_name }} = {{ cookiecutter.package_name }}.cli:main',
-        ]
+        ],
     },
 {%- if cookiecutter.c_extension_support != 'no' -%}
 {%- if cookiecutter.c_extension_optional == 'yes' %}
