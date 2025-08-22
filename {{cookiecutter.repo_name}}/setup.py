@@ -119,15 +119,7 @@ setup(
 {%- else %}
     name='{{ cookiecutter.package_name }}',
 {%- endif %}
-{%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
-    use_scm_version={
-        'local_scheme': 'dirty-tag',
-        'write_to': 'src/{{ cookiecutter.package_name }}/_version.py',
-        'fallback_version': '{{ cookiecutter.version }}',
-    },
-{%- else %}
     version='{{ cookiecutter.version }}',
-{%- endif %}
 {%- if cookiecutter.license != "no" %}
     license='{{ {
         "BSD 2-Clause License": "BSD-2-Clause",
