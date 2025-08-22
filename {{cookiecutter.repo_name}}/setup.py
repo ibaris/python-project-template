@@ -242,7 +242,7 @@ setup(
 {%- endif %}
 {%- if cookiecutter.c_extension_support == 'cffi' %}
     cffi_modules=[i + ':ffi' for i in glob('src/*/_*_build.py')],
-{%- else %}
+{% if cookiecutter.c_extension_support not in ['no', 'cffi'] -%}
     ext_modules=[
         Extension(
             splitext(relpath(path, 'src').replace(os.sep, '.'))[0],
