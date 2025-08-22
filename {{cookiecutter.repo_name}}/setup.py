@@ -112,6 +112,19 @@ def read(*names, **kwargs):
     with io.open(join(dirname(__file__), *names), encoding=kwargs.get('encoding', 'utf8')) as fh:
         return fh.read()
 
+# Function to read the contents of requirements.txt
+def read_requirements() -> list[str]:
+    """
+    Read requirements.txt, returning a list of dependencies.
+
+    Returns
+    -------
+    list of str
+        List containing the names of the required packages.
+    """
+    with open("requirements.txt", encoding="utf-8") as file:
+        return file.read().splitlines()
+
 
 setup(
 {%- if cookiecutter.named_package == 'yes' %}
@@ -202,8 +215,7 @@ setup(
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
     python_requires='>=3.7',
-    install_requires=[
-        'typer',],
+    install_requires=read_requirements(),
     extras_require={
         # eg:
         #   'rst': ['docutils>=0.11'],
