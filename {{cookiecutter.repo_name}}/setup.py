@@ -1,12 +1,5 @@
-"""
-Setup
-=====
-*Created on 22 by bari_is*
-*Copyright (C) 2025*
-*For COPYING and LICENSE details, please refer to the LICENSE file*
-
-"""
-
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 from setuptools import setup
 import io
 {%- if cookiecutter.c_extension_support in ['yes', 'cython', 'cffi'] %}
@@ -41,7 +34,9 @@ from setuptools import find_packages
 {% endif -%}
 
 {%- if cookiecutter.c_extension_support != 'no' %}
+{%- if cookiecutter.c_extension_optional == 'yes' %}
 from setuptools.command.build_ext import build_ext
+{%- endif %}
 from setuptools.dist import Distribution
 {%- if cookiecutter.c_extension_support == 'cython' %}
 
@@ -73,6 +68,7 @@ else:
     CFLAGS = ''
     LFLAGS = ''
 {%- endif %}
+{%- if cookiecutter.c_extension_optional == 'yes' %}
 
 CFLAGS += ' /openmp' if platform.system() == 'Windows' else '-fopenmp'
 LFLAGS += '' if platform.system() == 'Windows' else '-fopenmp'
@@ -101,6 +97,7 @@ class OptionalBuildExt(build_ext):
         print('')
         print('    ' + repr(e))
         print('*' * 80)
+{%- endif %}
 
 
 class BinaryDistribution(Distribution):
@@ -118,11 +115,19 @@ def read(*names, **kwargs):
 
 setup(
 {%- if cookiecutter.named_package == 'yes' %}
-    name='{{ cookiecutter.named_package_name }}-{{ cookiecutter.package_name }}',
+    name='{{ cookiecutter.named_package_name }}-{{ cookiecutter.distribution_name }}',
 {%- else %}
-    name='{{ cookiecutter.package_name }}',
+    name='{{ cookiecutter.distribution_name }}',
 {%- endif %}
+{%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
+    use_scm_version={
+        'local_scheme': 'dirty-tag',
+        'write_to': 'src/{{ cookiecutter.package_name }}/_version.py',
+        'fallback_version': '{{ cookiecutter.version }}',
+    },
+{%- else %}
     version='{{ cookiecutter.version }}',
+{%- endif %}
 {%- if cookiecutter.license != "no" %}
     license='{{ {
         "BSD 2-Clause License": "BSD-2-Clause",
@@ -196,58 +201,57 @@ setup(
         'Topic :: Utilities',
         'Private :: Do Not Upload',
     ],
-{%- if cookiecutter.repo_hosting_domain != "no" %}
     project_urls={
         'Documentation': '{{ cookiecutter.sphinx_docs_hosting }}',
         'Changelog': '{{ cookiecutter.sphinx_docs_hosting }}en/latest/changelog.html',
         'Issue Tracker': 'https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/issues',
     },
-{%- endif %}
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
     python_requires='>=3.7',
     install_requires=[
-{%- if cookiecutter.c_extension_support == 'cffi' %}
-        'cffi>=1.0.0',
-{%- endif %}
-        # eg: 'aspectlib==1.1.1', 'six>=1.7',
-    ],
+        'typer',],
     extras_require={
         # eg:
         #   'rst': ['docutils>=0.11'],
         #   ':python_version=="2.6"': ['argparse'],
     },
 {%- if cookiecutter.c_extension_support == 'cython' %}
-    setup_requires=[
+    setup_requires=[{{ setup_requires_interior }}
         'cython',
-    ] if Cython else [
+    ] if Cython else [{{ setup_requires_interior }}
     ],
 {%- elif cookiecutter.c_extension_support == 'cffi' %}
     # We only require CFFI when compiling.
     # pyproject.toml does not support requirements only for some build actions,
     # but we can do it in setup.py.
-    setup_requires=[
+    setup_requires=[{{ setup_requires_interior }}
         'cffi>=1.0.0',
-    ] if any(i.startswith('build') or i.startswith('bdist') for i in sys.argv) else [
+    ] if any(i.startswith('build') or i.startswith('bdist') for i in sys.argv) else [{{setup_requires_interior}}
     ],
-{%- endif %}
+{%- elif setup_requires_interior.strip() %}
+    setup_requires=[{{ setup_requires_interior }}
+    ],
+{%- endif -%}
+{%- if cookiecutter.command_line_interface != 'no' %}
     entry_points={
         'console_scripts': [
-            '{{ cookiecutter.package_name }} = {{ cookiecutter.package_name }}.cli:main',
+            '{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main',
         ]
     },
+{%- endif %}
 {%- if cookiecutter.c_extension_support != 'no' -%}
+{%- if cookiecutter.c_extension_optional == 'yes' %}
     cmdclass={'build_ext': OptionalBuildExt},
 {%- endif %}
 {%- if cookiecutter.c_extension_support == 'cffi' %}
     cffi_modules=[i + ':ffi' for i in glob('src/*/_*_build.py')],
-{% if cookiecutter.c_extension_support not in ['no', 'cffi'] -%}
+{%- else %}
     ext_modules=[
         Extension(
             splitext(relpath(path, 'src').replace(os.sep, '.'))[0],
             sources=[path],
-{%- endif %}
 {%- if cookiecutter.c_extension_support in ['yes', 'cython'] %}
             extra_compile_args=CFLAGS.split(),
             extra_link_args=LFLAGS.split(),
@@ -260,4 +264,6 @@ setup(
 {%- else %} '*.c'{% endif %}))
     ],
     distclass=BinaryDistribution,
+{%- endif %}
+{%- endif %}
 )
