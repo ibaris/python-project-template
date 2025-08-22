@@ -115,9 +115,9 @@ def read(*names, **kwargs):
 
 setup(
 {%- if cookiecutter.named_package == 'yes' %}
-    name='{{ cookiecutter.named_package_name }}-{{ cookiecutter.distribution_name }}',
+    name='{{ cookiecutter.named_package_name }}-{{ cookiecutter.package_name }}',
 {%- else %}
-    name='{{ cookiecutter.distribution_name }}',
+    name='{{ cookiecutter.package_name }}',
 {%- endif %}
 {%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
     use_scm_version={
