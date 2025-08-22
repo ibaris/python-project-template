@@ -226,13 +226,11 @@ setup(
     setup_requires=[
     ],
 {%- endif -%}
-{%- if cookiecutter.command_line_interface != 'no' %}
     entry_points={
         'console_scripts': [
-            '{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main',
+            '{{ cookiecutter.package_name }} = {{ cookiecutter.package_name }}.cli:main',
         ]
     },
-{%- endif %}
 {%- if cookiecutter.c_extension_support != 'no' -%}
 {%- if cookiecutter.c_extension_optional == 'yes' %}
     cmdclass={'build_ext': OptionalBuildExt},
