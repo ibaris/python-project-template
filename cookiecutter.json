@@ -48,5 +48,8 @@
 	"sphinx_docs_hosting": "https://{{ cookiecutter.repo_name|replace('.', '') }}.readthedocs.io/",
 	"_extensions": [
 		"jinja2_time.TimeExtension"
+	],
+	"_copy_without_render": [
+		".github/*"
 	]
 }
