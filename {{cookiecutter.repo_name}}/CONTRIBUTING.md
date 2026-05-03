@@ -43,17 +43,26 @@ To set up `{{ cookiecutter.repo_name }}` for local development:
 
     Now you can make your changes locally.
 
-4. When you're done making changes run all the checks and docs builder with `tox <https://tox.wiki/en/latest/install.html>`\_ one command::
+4. Install the project with the development dependencies::
 
-    tox
+    python -m pip install -e .[dev]
 
-5. Commit your changes and push your branch to GitHub::
+5. Run the test suite before opening a pull request::
+
+    pytest
+
+6. Run linting and formatting::
+
+    python -m ruff check --fix .
+    python -m ruff format .
+
+7. Commit your changes and push your branch to GitHub::
 
     git add .
     git commit -m "Your detailed description of your changes."
     git push origin name-of-your-bugfix-or-feature
 
-6. Submit a pull request through the GitHub website.
+8. Submit a pull request through the GitHub website.
 
 ### Pull Request Guidelines
 
@@ -61,7 +70,7 @@ If you need some code review or feedback while you're developing the code just m
 
 For merging, you should:
 
-1. Include passing tests (run `tox`).
+1. Include passing tests (run `pytest`).
 2. Update documentation when there's new API, functionality etc.
 3. Add a note to `../src/.info/CHANGELOG.md` about the changes.
 4. Add yourself to `../src/.info/AUTHORS.md`.
@@ -70,8 +79,4 @@ For merging, you should:
 
 To run a subset of tests::
 
-    tox -e envname -- pytest -k test_myfeature
-
-To run all the test environments in _parallel_::
-
-    tox -p auto
+    pytest -k test_myfeature

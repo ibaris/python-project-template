@@ -52,23 +52,27 @@ The documentation `code` documentation is in `build/docs`.
 
 # Development
 
-To run all the tests and to build the `code` documentation run
+Install the project in editable mode with the development dependencies:
 
 ```cmd
->>> tox
+> pip install -e .[dev]
 ```
 
-Note, to combine the coverage data from all the tox environments run:
+Run the test suite directly with `pytest`:
 
 ```cmd
->>> set PYTEST_ADDOPTS=--cov-append
->>> tox
+> pytest
 ```
 
-for Windows and
+Run linting and formatting with Ruff:
 
 ```cmd
->>> PYTEST_ADDOPTS=--cov-append tox
+> python -m ruff check --fix .
+> python -m ruff format .
 ```
 
-for Linux.
+To include coverage:
+
+```cmd
+> pytest --cov --cov-report=term-missing
+```
