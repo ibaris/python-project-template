@@ -139,7 +139,7 @@ push = true
     'version = "{version}"',
 ]
 "README.md" = [
-    "[v-{version}]",
+    "v-{version}",
 ]
 "src/{{ cookiecutter.package_name }}/__init__.py" = [
     '__version__ = "{version}"',
