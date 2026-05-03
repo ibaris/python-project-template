@@ -1,31 +1,134 @@
 [build-system]
 requires = [
-    "setuptools>=30.3.0",
+    "setuptools>=69",
     "wheel",
-{%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
-    "setuptools_scm>=3.3.1",
-{%- endif %}
-{%- if cookiecutter.c_extension_support == 'cffi' %}
-    "cffi>=1.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{ cookiecutter.distribution_name }}"
+version = "{{ cookiecutter.version }}"
+description = {{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }}
+readme = "README.md"
+requires-python = ">=3.11"
+{%- if cookiecutter.full_name or cookiecutter.email %}
+authors = [
+{%- if cookiecutter.full_name and cookiecutter.email %}
+    { name = {{ '{0!r}'.format(cookiecutter.full_name).lstrip('ub') }}, email = {{ '{0!r}'.format(cookiecutter.email).lstrip('ub') }} },
+{%- elif cookiecutter.full_name %}
+    { name = {{ '{0!r}'.format(cookiecutter.full_name).lstrip('ub') }} },
+{%- else %}
+    { email = {{ '{0!r}'.format(cookiecutter.email).lstrip('ub') }} },
 {%- endif %}
 ]
-{%- if cookiecutter.pre_commit_formatter == 'black' %}
+{%- endif %}
+{%- if cookiecutter.license != "no" %}
+license = { text = "{{ cookiecutter.license }}" }
+{%- endif %}
+keywords = []
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+{%- if cookiecutter.license == "no" %}
+{%- elif cookiecutter.license in ["BSD 2-Clause License", "BSD 3-Clause License"] %}
+    "License :: OSI Approved :: BSD License",
+{%- elif cookiecutter.license == "MIT license" %}
+    "License :: OSI Approved :: MIT License",
+{%- elif cookiecutter.license == "ISC license" %}
+    "License :: OSI Approved :: ISC License (ISCL)",
+{%- elif cookiecutter.license == "Apache Software License 2.0" %}
+    "License :: OSI Approved :: Apache Software License",
+{%- elif 'LGPLv3+' in cookiecutter.license %}
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+{%- elif 'LGPLv3' in cookiecutter.license %}
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+{%- elif 'LGPLv2+' in cookiecutter.license %}
+    "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",
+{%- elif 'LGPLv2' in cookiecutter.license %}
+    "License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)",
+{%- endif %}
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Utilities",
+{%- if cookiecutter.pypi_disable_upload == "yes" %}
+    "Private :: Do Not Upload",
+{%- endif %}
+]
+dependencies = [
+    "typer>=0.12",
+]
 
-[tool.black]
-line-length = 140
-target-version = ['py39']
-skip-string-normalization = true
-{%- elif cookiecutter.pre_commit_formatter == 'blue' %}
-
-[tool.blue]
-line-length = 140
-target-version = ['py38']
+{%- if cookiecutter.repo_hosting_domain and cookiecutter.repo_username %}
+[project.urls]
+Homepage = "https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}"
+Issues = "https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/issues"
+{%- if cookiecutter.sphinx_docs == "yes" %}
+Documentation = "{{ cookiecutter.sphinx_docs_hosting }}"
+{%- endif %}
 {%- endif %}
 
+[project.scripts]
+{{ cookiecutter.command_line_interface_bin_name }} = "{{ cookiecutter.package_name }}.cli:app"
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.2",
+    "bumpver>=2023.1129",
+{%- if cookiecutter.pre_commit == "yes" %}
+    "pre-commit>=3.7",
+{%- endif %}
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6.0",
+]
+{%- if cookiecutter.sphinx_docs == "yes" %}
+docs = [
+    "sphinx>=7.0",
+    "{{ cookiecutter.sphinx_theme }}",
+]
+{%- endif %}
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["{{ cookiecutter.package_name }}*"]
+
+[tool.pytest.ini_options]
+norecursedirs = ["migrations"]
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+{%- if cookiecutter.allow_tests_inside_package == 'yes' %}
+    "--pyargs",
+{%- endif %}
+    "--doctest-modules",
+    "--doctest-glob=*.rst",
+    "--tb=short",
+]
+{%- if cookiecutter.allow_tests_inside_package == 'yes' %}
+testpaths = ["{{ cookiecutter.package_name }}", "tests"]
+{%- else %}
+testpaths = ["tests"]
+{%- endif %}
+filterwarnings = ["error"]
+
 [tool.bumpver]
-current_version = "{{cookiecutter.version}}"
-version_pattern = "YYYY.MM.PATCH"
-commit_message = "ver({{cookiecutter.package_name}}): bump version from {old_version} -> {new_version}"
+current_version = "{{ cookiecutter.version }}"
+version_pattern = "YYYY.MM.INC0.PATCH"
+commit_message = "ver({{ cookiecutter.package_name }}): bump version from {old_version} -> {new_version}"
 commit = true
 tag = true
 push = true
@@ -33,32 +136,56 @@ push = true
 [tool.bumpver.file_patterns]
 "pyproject.toml" = [
     'current_version = "{version}"',
-]
-"setup.py" = [
-    "{version}",
+    'version = "{version}"',
 ]
 "README.md" = [
-    "{version}",
+    "[v-{version}]",
 ]
-{%- if cookiecutter.named_package == 'no' %}
-"src/{{cookiecutter.package_name}}/__init__.py" = [
-    "{version}",
+"src/{{ cookiecutter.package_name }}/__init__.py" = [
+    '__version__ = "{version}"',
 ]
-{%- else %}
-"src/{{cookiecutter.named_package_name}}/{{cookiecutter.package_name}}/__init__.py" = [
-    "{version}",
+"src/.info/CHANGELOG.md" = [
+    "## [{version}]",
 ]
-{%- endif %}
 "resources/docs/conf.py" = [
-    "{version}",
+    'version = release = "{version}"',
 ]
 "resources/docs/readme.rst" = [
-    "{version}",
+    "{{ cookiecutter.project_name }} [v-{version}]",
 ]
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-line_length = 110
-profile = "black"
+[tool.ruff]
+line-length = 140
+extend-exclude = ["resources/docs/conf.py", "resources/scripts/deploy.py"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN401",
+    "COM812",
+    "D205",
+    "D212",
+    "D400",
+    "D401",
+    "D413",
+    "D415",
+    "EM",
+    "EM101",
+    "ERA001",
+    "FBT001",
+    "FBT002",
+    "PLR0913",
+    "PTH",
+    "RET504",
+    "T201",
+    "TRY003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"resources/docs/conf.py" = ["A001", "D100", "INP001", "Q000", "UP009", "UP030", "UP031", "UP032", "I001", "COM812"]
+"resources/scripts/*.py" = ["D100", "INP001", "UP009"]
+"tests/*.py" = ["ANN201", "D100", "D103", "INP001", "RUF048", "S101"]

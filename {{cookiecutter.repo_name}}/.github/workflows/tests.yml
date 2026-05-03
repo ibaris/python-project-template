@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+    branches: ["{{ cookiecutter.repo_main_branch }}", "release-candidate"]
+  pull_request:
+    branches: ["{{ cookiecutter.repo_main_branch }}", "release-candidate"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+{%- if cookiecutter.github_actions_windows == "yes" %}
+          - windows-latest
+{%- endif %}
+{%- if cookiecutter.github_actions_osx == "yes" %}
+          - macos-latest
+{%- endif %}
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package and dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+      - name: Run tests
+        run: pytest

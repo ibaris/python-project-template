@@ -1,31 +1,19 @@
 name: {{cookiecutter.project_env_name}}
 channels:
-  - defaults
   - anaconda
   - conda-forge
 dependencies:
-  - python=3.9
-  - numpy
-  - scipy
-  - mkl
-  - mkl_fft
-  - mkl_random
-  - mkl-service
-  - conda-forge::pyglfw
+  - python=3.11
+  - build
+  - bumpver
+{%- if cookiecutter.pre_commit == "yes" %}
   - conda-forge::pre-commit
-  - matplotlib
-  - seaborn
-  - jupyter
-  - jupyterlab
-  - cython
-  - psutil
-  - pylint
-  - mypy
-  - pycodestyle
+{%- endif %}
   - pytest
   - pytest-cov
+  - ruff
+{%- if cookiecutter.sphinx_docs == "yes" %}
   - sphinx
+  - {{ cookiecutter.sphinx_theme }}
+{%- endif %}
   - pip
-  - pip:
-      - pyyaml
-      - tox

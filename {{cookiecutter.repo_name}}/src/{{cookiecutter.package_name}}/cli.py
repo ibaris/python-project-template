@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Command Line Interface
 ======================
@@ -17,46 +16,18 @@ problems: the code will get executed twice:
 - When you import __main__ it will get executed again (as a module) because
   there's no ``{{cookiecutter.package_name}}.__main__`` in ``sys.modules``.
 
-Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
+The Typer app lives in this module so it can be reused by both the console
+script entry point and `python -m {{cookiecutter.package_name}}`.
 """
-{%- if cookiecutter.command_line_interface == 'click' %}
-import click
-{%- elif cookiecutter.command_line_interface == 'argparse' %}
-import argparse
-{%- else %}
-from typing import Literal
-import sys
-{%- endif %}
-{%- if cookiecutter.command_line_interface == 'click' %}
+
+from typing import Annotated
+
+import typer
+
+app = typer.Typer(help="Command line interface for {{ cookiecutter.project_name }}.")
 
 
-@click.command()
-@click.argument('names', nargs=-1)
-def main(names) -> None:
-    click.echo(repr(names))
-{%- elif cookiecutter.command_line_interface == 'argparse' %}
-
-parser = argparse.ArgumentParser(description='Command description.')
-parser.add_argument('names', metavar='NAME', nargs=argparse.ZERO_OR_MORE,
-                    help="A name of something.")
-
-
-def main(args=None) -> None:
-    args = parser.parse_args(args=args)
-    print(args.names)
-{%- else %}
-
-
-def main(argv=sys.argv) -> Literal[0]:
-    """
-    Args:
-        argv (list): List of arguments
-
-    Returns:
-        int: A return code
-
-    Does stuff.
-    """
-    print(argv)
-    return 0
-{%- endif %}
+@app.command()
+def main(names: Annotated[list[str] | None, typer.Argument()] = None) -> None:
+    """Run the default command."""
+    typer.echo(repr(tuple(names or [])))
