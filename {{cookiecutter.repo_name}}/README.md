@@ -3,15 +3,20 @@
         <img src="{{ cookiecutter.project_logo }}">
     </p>
 
-<h2 align="center">{{ cookiecutter.project_name }}</h4>
+<h2 align="center">{{ cookiecutter.project_name }}</h2>
 <h4 align="center">{{ cookiecutter.project_short_description }}</h4>
 <h5 align="center">[v-{{ cookiecutter.version }}]</h5>
 
 <p align="center">
-  <a href="#introduction">Introduction</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#installation">Documentation</a> •
-  <a href="#installation">Development</a>
+{% if cookiecutter.github_actions == "yes" and cookiecutter.repo_hosting_domain == "github.com" and cookiecutter.repo_username %}
+  <a href="https://github.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/actions/workflows/tests.yml">
+    <img src="https://github.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/actions/workflows/tests.yml/badge.svg?branch={{ cookiecutter.repo_main_branch }}" alt="Tests">
+  </a>
+{% endif %}
+  <a href="#introduction">Introduction</a> &bull;
+  <a href="#installation">Installation</a> &bull;
+  <a href="#documentation">Documentation</a> &bull;
+  <a href="#development">Development</a>
 </p>
 </div>
 
