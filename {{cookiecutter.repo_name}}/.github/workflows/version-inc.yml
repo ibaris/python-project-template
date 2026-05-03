@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: {% raw %}${{ github.event.workflow_run.head_branch }}{% endraw %}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -33,7 +33,7 @@ jobs:
           python -m pip install bumpver
       - name: Increase version
         env:
-          CURRENT_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          CURRENT_BRANCH: {% raw %}${{ github.event.workflow_run.head_branch }}{% endraw %}
         run: |
           echo "Current branch: $CURRENT_BRANCH"
 
