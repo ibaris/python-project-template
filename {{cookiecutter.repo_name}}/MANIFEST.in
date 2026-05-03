@@ -1,11 +1,7 @@
-graft docs
 graft src
-graft ci
+graft resources
 graft tests
 
-include .cookiecutterrc
-include .coveragerc
-include .editorconfig
 {% if cookiecutter.github_actions == 'yes' -%}
 include .github/workflows/github-actions.yml
 {% endif -%}
@@ -15,24 +11,19 @@ include .pre-commit-config.yaml
 {% if cookiecutter.sphinx_docs == 'yes' and 'readthedocs' in cookiecutter.sphinx_docs_hosting -%}
 include .readthedocs.yml
 {% endif -%}
-{% if cookiecutter.c_extension_support == 'cffi' or cookiecutter.setup_py_uses_setuptools_scm == 'yes' -%}
 include pyproject.toml
-{% endif -%}
-include pytest.ini
 {% if cookiecutter.include_docker == 'yes' -%}
 include Dockerfile
 include .devcontainer.json
 include .dockerignore
-include ./scripts/*
 {% endif -%}
-include tox.ini
 
 include ./src/.info/*
-include ./envs/*
+include ./resources/envs/*
+include ./resources/scripts/*
 include CONTRIBUTING.md
 include LICENSE
 include README.md
 include ./.vscode/*
-include ./.gitlab/*
 
 global-exclude *.py[cod] __pycache__/* *.so *.dylib
