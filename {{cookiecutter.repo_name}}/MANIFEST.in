@@ -3,7 +3,7 @@ graft resources
 graft tests
 
 {% if cookiecutter.github_actions == 'yes' -%}
-include .github/workflows/github-actions.yml
+graft .github
 {% endif -%}
 {% if cookiecutter.pre_commit == "yes" -%}
 include .pre-commit-config.yaml
