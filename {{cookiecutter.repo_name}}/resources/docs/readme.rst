@@ -66,29 +66,25 @@ To use the project:
 .. code-block:: python
 
     import {{ cookiecutter.package_name }}
-    {{ cookiecutter.package_name }}.{{ cookiecutter.c_extension_function }}()
+    print({{ cookiecutter.package_name }}.__version__)
 {% endif %}
 
 Development
 ===========
 
-To run all the tests run::
+Install the project in editable mode with the development dependencies::
 
-    tox
+    pip install -e .[dev]
 
-Note, to combine the coverage data from all the tox environments run:
+Run the test suite directly with::
 
-.. list-table::
-    :widths: 10 90
-    :stub-columns: 1
+    pytest
 
-    - - Windows
-      - ::
+Run linting and formatting with::
 
-            set PYTEST_ADDOPTS=--cov-append
-            tox
+    python -m ruff check --fix .
+    python -m ruff format .
 
-    - - Other
-      - ::
+To include coverage use::
 
-            PYTEST_ADDOPTS=--cov-append tox
+    pytest --cov --cov-report=term-missing
