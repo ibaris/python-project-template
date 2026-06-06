@@ -41,6 +41,7 @@ htmlcov
 
 # Buildout
 .mr.developer.cfg
+AGENTS.md
 
 # IDE project files
 .project
