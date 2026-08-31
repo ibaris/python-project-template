@@ -27,8 +27,8 @@ This is an "all inclusive" sort of template.
 * Tox_ for managing test environments for Python 2.7, 3.7+, PyPy etc.
 * Pytest_ or Nose_ for testing Python 2.7, 3.7+, PyPy etc.
 * *Optional* support for creating a tests matrix out of dependencies and python versions.
-* Travis-CI_ and AppVeyor_ for continuous testing.
-* Coveralls_ or Codecov_ for coverage tracking (using Tox_).
+* GitHub Actions_ for continuous testing.
+* Codecov_ for coverage tracking.
 * Documentation with Sphinx_, ready for ReadTheDocs_.
 * Configurations for:
 
@@ -125,7 +125,7 @@ You will be asked for these fields:
 
             "github.com"
       - Use ``"no"`` for no hosting (various links will disappear). You can also use ``"gitlab.com"`` and such but various
-        things will be broken (like Travis configuration).
+        hosted-service links may need adjustments.
 
     * - ``repo_name``
       - .. code:: python
@@ -138,12 +138,6 @@ You will be asked for these fields:
 
             "nameless"
       - Python package name (whatever you would import).
-
-    * - ``distribution_name``
-      - .. code:: python
-
-            "nameless"
-      - PyPI distribution name (what you would ``pip install``).
 
     * - ``project_short_description``
       - .. code:: python
@@ -238,11 +232,6 @@ You will be asked for these fields:
 
         "flake8"
       - Linter to use for ``tox -e check``. Available options: ``flake8`` or ``pylama``
-    * - ``pre_commit``
-      - .. code:: python
-
-        "no"
-      - Enable basic `pre-commit <https://pre-commit.com/>`_ configuration.
     * - ``command_line_interface``
       - .. code:: python
 
@@ -279,14 +268,6 @@ You will be asked for these fields:
             "no"
       - Enable pushing coverage data to Coveralls_ and add badge in ``README.rst``.
 
-    * - ``codecov``
-      - .. code:: python
-
-            "yes"
-      - Enable pushing coverage data to Codecov_ and add badge in ``README.rst``.
-
-        **Note:** Doesn't support pushing C extension coverage yet.
-
     * - ``scrutinizer``
       - .. code:: python
 
@@ -306,12 +287,6 @@ You will be asked for these fields:
 
             "no"
       - Add a CodeClimate_ badge in ``README.rst``.
-
-    * - ``sphinx_docs``
-      - .. code:: python
-
-            "yes"
-      - Have Sphinx documentation.
 
     * - ``sphinx_theme``
       - .. code:: python
@@ -354,34 +329,13 @@ You will be asked for these fields:
       - If you specifically want to be sure your package will never be
         accidentally uploaded to PyPI, you can pick "yes".
 
-    * - ``travis``
+    * - ``github_actions``
       - .. code:: python
 
             "yes"
-      - If you want the Travis-CI_ badge and configuration.
-    * - ``travis_osx``
-      - .. code:: python
+      - If you want the GitHub Actions_ badge and configuration.
 
-            "no"
-      - Enables OSX support in the Travis-CI_ configuration. To keep things simple and easy to understand only Brew
-        Python 2 and 3 will be used.
-
-        You probably want to enable this if you use ``c_extension_test_pypi == 'yes'``.
-    * - ``appveyor``
-      - .. code:: python
-
-            "yes"
-      - If you want the AppVeyor_ badge and configuration.
-
-The testing (``tox.ini`` and ``.travis.yml``) configuration is generated from templates. For your convenience there's an
-initial bootstrap ``tox.ini``, to get the initial generation going just run::
-
-  tox
-
-You can later regenerate ``tox.ini`` and ``.travis.yml`` by running (if you enabled the ``test_matrix_configurator``
-option)::
-
-  tox -e bootstrap
+The testing configuration is generated with the project.
 
 After this you can create the initial repository (make sure you `create <https://github.com/new>`_ an *empty* Github
 project)::
@@ -394,8 +348,7 @@ project)::
 
 Then:
 
-* `Enable the repository in your Travis CI account <https://travis-ci.com/account/migrate>`_.
-* `Enable the repository in your Coveralls account <https://coveralls.io/repos/new>`_.
+* Confirm GitHub Actions is enabled for the repository.
 * `Add the repo to your ReadTheDocs account <https://readthedocs.org/dashboard/import/>`_ + turn on the ReadTheDocs
   service hook. Don't forget to enable virtualenv and specify ``docs/requirements.txt`` as the requirements file in
   `Advanced Settings`.
@@ -516,14 +469,13 @@ No way, this is the best. :stuck_out_tongue_winking_eye:
 
 If you have criticism or suggestions please open up an Issue or Pull Request.
 
-.. _Travis-CI: http://travis-ci.com/
+.. _GitHub Actions: https://github.com/features/actions
 .. _Tox: https://tox.wiki/en/latest/
 .. _Sphinx: http://sphinx-doc.org/
 .. _Coveralls: https://coveralls.io/
 .. _ReadTheDocs: https://readthedocs.org/
 .. _Setuptools: https://pypi.org/project/setuptools
 .. _Pytest: http://pytest.org/
-.. _AppVeyor: http://www.appveyor.com/
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _Nose: http://nose.readthedocs.org/
 .. _isort: https://pypi.org/project/isort
