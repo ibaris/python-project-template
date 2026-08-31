@@ -26,7 +26,7 @@ year = '{% if cookiecutter.year_from == cookiecutter.year_to %}{{ cookiecutter.y
 author = {{ '{0!r}'.format(cookiecutter.full_name) }}
 copyright = '{0}, {1}'.format(year, author)
 try:
-    version = release = get_version('{{ cookiecutter.distribution_name }}')
+    version = release = get_version('{{ cookiecutter.package_name }}')
 except PackageNotFoundError:
     version = release = "{{ cookiecutter.version }}"
 
