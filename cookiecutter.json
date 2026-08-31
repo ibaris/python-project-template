@@ -4,20 +4,20 @@
 	"website": "",
 	"project_name": "Nameless",
 	"repo_name": "{{ cookiecutter.project_name|lower|replace(' ','-') }}",
-	"repo_hosting": ["github.com", "gitlab.com", "other domain not listed"],
+	"repo_hosting": [
+		"github.com",
+		"gitlab.com",
+		"other domain not listed"
+	],
 	"repo_hosting_domain": "{{ cookiecutter.repo_hosting if cookiecutter.repo_hosting != 'other domain not listed' else '' }}",
 	"repo_username": "",
-	"repo_main_branch": "main",
 	"package_name": "{{ cookiecutter.project_name|lower|replace(' ','_')|replace('-','_') }}",
-	"distribution_name": "{{ cookiecutter.package_name|replace('_','-') }}",
-	"project_env_file": "{{ cookiecutter.package_name }}",
-	"project_env_name": "{{ cookiecutter.project_env_file }}",
 	"project_short_description": "An example package. Generated with cookiecutter-pylibrary.",
 	"project_logo": "./data/logo/logo.png",
 	"release_date": "today",
 	"year_from": "{% now 'utc', '%Y' %}",
 	"year_to": "{% now 'utc', '%Y' %}",
-	"version": "{% now 'utc', '%Y' %}.{% now 'utc', '%#m' %}.0.0",
+	"version": "{% now 'utc', '%Y' %}.{% now 'utc', '%#m' %}.0",
 	"license": [
 		"no",
 		"BSD 2-Clause License",
@@ -30,13 +30,15 @@
 		"GNU Lesser General Public License v2.1 or later (LGPLv2+)",
 		"GNU Lesser General Public License v2.1 (LGPLv2)"
 	],
-	"include_docker": ["yes", "no"],
-	"pypi_disable_upload": ["yes", "no"],
-	"allow_tests_inside_package": ["no", "yes"],
-	"pre_commit": ["yes", "no"],
-	"command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",
-	"codecov": ["yes", "no"],
-	"sphinx_docs": ["yes", "no"],
+	"pypi_disable_upload": [
+		"yes",
+		"no"
+	],
+	"allow_tests_inside_package": [
+		"no",
+		"yes"
+	],
+	"command_line_interface_bin_name": "{{ cookiecutter.package_name }}",
 	"sphinx_theme": [
 		"sphinx-rtd-theme",
 		"python-docs-theme",
@@ -45,12 +47,16 @@
 		"furo",
 		"pydata-sphinx-theme"
 	],
-	"sphinx_doctest": ["no", "yes"],
+	"sphinx_doctest": [
+		"no",
+		"yes"
+	],
 	"sphinx_docs_hosting": "https://{{ cookiecutter.repo_name|replace('.', '') }}.readthedocs.io/",
-	"appveyor": ["no", "yes"],
-	"github_actions": ["yes", "no"],
-	"github_actions_osx": ["no", "yes"],
-	"github_actions_windows": ["yes", "no"],
-
-	"_extensions": ["jinja2_time.TimeExtension"]
+	"github_actions": [
+		"yes",
+		"no"
+	],
+	"_extensions": [
+		"jinja2_time.TimeExtension"
+	]
 }
