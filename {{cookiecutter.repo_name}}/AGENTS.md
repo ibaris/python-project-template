@@ -6,7 +6,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 
 ## Environment
 
-Use Conda Environment `{{ cookiecutter.project_env_name }}`.
+Use Conda Environment `{{ cookiecutter.project_name }}`.
 
 ## Paths
 
@@ -162,6 +162,7 @@ For multi-step tasks, state a brief plan:
 Strong success criteria let you loop independently. Weak criteria require clarification.
 
 ## CAUTION
+
 **READ THIS DOCUMENT TWICE!**
 
 ---
