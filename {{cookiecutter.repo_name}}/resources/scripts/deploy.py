@@ -13,76 +13,10 @@ from typing import Annotated
 import typer
 from tqdm import tqdm
 
+
 app = typer.Typer(no_args_is_help=True)
 
-PACKAGE_NAME = "{{ cookiecutter.version }}"
-
-RELEASE_SETUP = """\
-from __future__ import annotations
-
-import glob
-import os
-from typing import Any
-
-from Cython.Build import cythonize
-from setuptools import setup
-from setuptools.command.build_py import build_py
-
-
-PYTHON_FILES = set(
-    glob.glob(os.path.join("src", "**", "*.py"), recursive=True)
-)
-INIT_FILES = set(
-    glob.glob(os.path.join("src", "**", "__init__.py"), recursive=True)
-)
-
-MODULES_TO_COMPILE = sorted(PYTHON_FILES - INIT_FILES)
-MODULES_TO_COMPILE_SET = set(map(os.path.normpath, MODULES_TO_COMPILE))
-
-
-class ReleaseBuildPy(build_py):
-    \"\"\"Build package files without copying Cythonized Python sources.\"\"\"
-
-    def build_module(
-        self,
-        module: str,
-        module_file: str,
-        package: str,
-    ) -> Any:
-        \"\"\"Build a Python module unless Cython provides the implementation.
-
-        Parameters
-        ----------
-        module
-            Module name.
-        module_file
-            Path to the Python source file.
-        package
-            Parent package name.
-
-        Returns
-        -------
-        Any
-            Result from the standard setuptools build process, or ``None``
-            when the module is compiled by Cython.
-        \"\"\"
-        if os.path.normpath(module_file) in MODULES_TO_COMPILE_SET:
-            return None
-
-        return super().build_module(module, module_file, package)
-
-
-setup(
-    ext_modules=cythonize(
-        MODULES_TO_COMPILE,
-        compiler_directives={"language_level": "3"},
-        nthreads=4,
-    ),
-    cmdclass={
-        "build_py": ReleaseBuildPy,
-    },
-)
-"""
+PACKAGE_NAME = "{{ cookiecutter.package_name }}"
 
 
 def validate_source_root(source_root: str) -> None:
@@ -108,12 +42,14 @@ def validate_source_root(source_root: str) -> None:
         )
 
     if not os.path.isdir(package_path):
-        raise RuntimeError(f"Package directory not found: {package_path}")
+        raise RuntimeError(
+            f"Package directory not found: {package_path}"
+        )
 
     if os.path.exists(setup_path):
         raise RuntimeError(
             "Root setup.py must not exist. "
-            "Cython build configuration is deployment-only."
+            "Release builds use pyproject.toml."
         )
 
 
@@ -135,6 +71,7 @@ def copy_repository(source_root: str, staging_root: str) -> None:
             ".venv",
             ".pytest_cache",
             ".ruff_cache",
+            ".tmp",
             "__pycache__",
             "*.egg-info",
             "build",
@@ -144,80 +81,8 @@ def copy_repository(source_root: str, staging_root: str) -> None:
     )
 
 
-def enable_cython_build(pyproject_path: str) -> None:
-    """Enable Cython only inside the isolated release project.
-
-    Parameters
-    ----------
-    pyproject_path
-        Path to the staged ``pyproject.toml``.
-
-    Raises
-    ------
-    RuntimeError
-        If the expected normal build configuration cannot be found.
-    """
-    with open(pyproject_path, encoding="utf-8") as file:
-        content = file.read()
-
-    normal_requirements = 'requires = ["setuptools>=64", "wheel"]'
-    release_requirements = 'requires = ["setuptools>=64", "wheel", "Cython"]'
-
-    if release_requirements in content:
-        return
-
-    if normal_requirements not in content:
-        raise RuntimeError(
-            "Unexpected [build-system].requires configuration. "
-            "Expected setuptools and wheel without Cython."
-        )
-
-    content = content.replace(
-        normal_requirements,
-        release_requirements,
-        1,
-    )
-
-    with open(pyproject_path, "w", encoding="utf-8") as file:
-        file.write(content)
-
-
-def configure_release_manifest(manifest_path: str) -> None:
-    """Ensure generated C sources cannot enter the release artifact.
-
-    Parameters
-    ----------
-    manifest_path
-        Path to the staged ``MANIFEST.in``.
-    """
-    with open(manifest_path, encoding="utf-8") as file:
-        content = file.read()
-
-    exclusion = "global-exclude *.c"
-
-    if exclusion not in content:
-        content = f"{content.rstrip()}\n{exclusion}\n"
-
-    with open(manifest_path, "w", encoding="utf-8") as file:
-        file.write(content)
-
-
-def write_release_setup(staging_root: str) -> None:
-    """Create the deployment-only ``setup.py`` in the staging project.
-
-    Parameters
-    ----------
-    staging_root
-        Isolated release source directory.
-    """
-    setup_path = os.path.join(staging_root, "setup.py")
-
-    with open(setup_path, "w", encoding="utf-8") as file:
-        file.write(RELEASE_SETUP)
-
-
 def build_wheels(staging_root: str) -> str:
-    """Build platform wheels using cibuildwheel.
+    """Build a release wheel.
 
     Parameters
     ----------
@@ -235,10 +100,10 @@ def build_wheels(staging_root: str) -> str:
         [
             sys.executable,
             "-m",
-            "cibuildwheel",
+            "build",
             ".",
-            "--output-dir",
-            "wheelhouse",
+            "--wheel",
+            "--outdir=wheelhouse",
         ],
         cwd=staging_root,
         check=True,
@@ -248,7 +113,7 @@ def build_wheels(staging_root: str) -> str:
 
 
 def verify_release_wheel(wheel_path: str) -> None:
-    """Verify that a release wheel contains compiled code only.
+    """Verify that a release wheel does not contain compiled artifacts.
 
     Parameters
     ----------
@@ -258,34 +123,29 @@ def verify_release_wheel(wheel_path: str) -> None:
     Raises
     ------
     RuntimeError
-        If protected Python sources, generated C sources, or no compiled
-        extensions are present.
+        If generated C sources or compiled extensions are present.
     """
     with zipfile.ZipFile(wheel_path) as archive:
         names = archive.namelist()
 
-    python_sources = set(fnmatch.filter(names, f"{PACKAGE_NAME}/*.py"))
-    init_sources = set(fnmatch.filter(names, "*/__init__.py"))
-    protected_sources = python_sources - init_sources
-
     c_sources = set(fnmatch.filter(names, "*.c"))
 
-    compiled_extensions = set(fnmatch.filter(names, f"{PACKAGE_NAME}/*.so"))
-    compiled_extensions.update(fnmatch.filter(names, f"{PACKAGE_NAME}/*.pyd"))
-
-    if protected_sources:
-        raise RuntimeError(
-            "Release wheel contains protected Python source files: "
-            f"{sorted(protected_sources)}"
-        )
+    compiled_extensions = set(fnmatch.filter(names, "*.so"))
+    compiled_extensions.update(
+        fnmatch.filter(names, "*.pyd")
+    )
 
     if c_sources:
         raise RuntimeError(
-            f"Release wheel contains generated C source files: {sorted(c_sources)}"
+            "Release wheel contains generated C source files: "
+            f"{sorted(c_sources)}"
         )
 
-    if not compiled_extensions:
-        raise RuntimeError("Release wheel contains no compiled Cython extensions.")
+    if compiled_extensions:
+        raise RuntimeError(
+            "Release wheel contains compiled extension files: "
+            f"{sorted(compiled_extensions)}"
+        )
 
 
 def publish_wheels(
@@ -297,19 +157,21 @@ def publish_wheels(
     Parameters
     ----------
     wheelhouse
-        Temporary cibuildwheel output directory.
+        Temporary build output directory.
     output_directory
         Final directory receiving verified wheels.
 
     Raises
     ------
     RuntimeError
-        If cibuildwheel produced no wheels.
+        If the build produced no wheels.
     """
-    wheel_paths = sorted(glob.glob(os.path.join(wheelhouse, "*.whl")))
+    wheel_paths = sorted(
+        glob.glob(os.path.join(wheelhouse, "*.whl"))
+    )
 
     if not wheel_paths:
-        raise RuntimeError("cibuildwheel produced no wheels.")
+        raise RuntimeError("Build produced no wheels.")
 
     os.makedirs(output_directory, exist_ok=True)
 
@@ -344,14 +206,14 @@ def main(
         ),
     ] = "wheelhouse",
 ) -> None:
-    """Build protected binary release wheels.
+    """Build release wheels.
 
     Parameters
     ----------
     src
         Repository root.
     output_dir
-        Directory receiving the verified binary wheels.
+        Directory receiving the verified wheels.
     """
     source_root = os.path.abspath(src)
 
@@ -362,7 +224,9 @@ def main(
 
     validate_source_root(source_root)
 
-    with tempfile.TemporaryDirectory(prefix="{{ cookiecutter.version }}-release-") as temporary_root:
+    with tempfile.TemporaryDirectory(
+        prefix="{{ cookiecutter.package_name }}-release-"
+    ) as temporary_root:
         staging_root = os.path.join(
             temporary_root,
             "repository",
@@ -372,12 +236,6 @@ def main(
             source_root=source_root,
             staging_root=staging_root,
         )
-
-        enable_cython_build(os.path.join(staging_root, "pyproject.toml"))
-
-        configure_release_manifest(os.path.join(staging_root, "MANIFEST.in"))
-
-        write_release_setup(staging_root)
 
         wheelhouse = build_wheels(staging_root)
 

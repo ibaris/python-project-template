@@ -1,3 +1,6 @@
+import os
+import tomllib
+
 from typer.testing import CliRunner
 
 from {{ cookiecutter.package_name }} import __version__
@@ -13,4 +16,7 @@ def test_main() -> None:
 
 
 def test_version() -> None:
-    assert tuple(map(int, __version__.split("."))) == ({{ cookiecutter.version | replace(".", ", ") }})
+    project_file = os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
+    with open(project_file, "rb") as source:
+        project = tomllib.load(source)
+    assert __version__ == project["project"]["version"]

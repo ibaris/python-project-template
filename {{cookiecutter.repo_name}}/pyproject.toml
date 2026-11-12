@@ -87,6 +87,7 @@ dev = [
     "jupyterlab",
     "twine",
     "build",
+    "tqdm",
     "import-linter",
     "pre-commit>=3.7",
     "pytest-cov>=5.0",
@@ -148,13 +149,13 @@ version_replacement = "{year}.{month}.{patch}"
     '__version__ = "{version}"',
 ]
 "src/.info/CHANGELOG.md" = [
-    "## [{version}]",
+    '## \[{version}\]',
 ]
-"docs/conf.py" = [
+"resources/docs/conf.py" = [
     'version = release = "{version}"',
 ]
-"docs/readme.rst" = [
-    "{{ cookiecutter.project_name }} [v-{version}]",
+"resources/docs/readme.rst" = [
+    '{{ cookiecutter.project_name }} \[v-{version}\]',
 ]
 
 
@@ -208,3 +209,13 @@ ignore = [
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.importlinter]
+root_package = "{{ cookiecutter.package_name }}"
+
+[[tool.importlinter.contracts]]
+name = "CLI must not import the module entrypoint"
+type = "forbidden"
+source_modules = ["{{ cookiecutter.package_name }}.cli"]
+forbidden_modules = ["{{ cookiecutter.package_name }}.__main__"]
+allow_indirect_imports = false

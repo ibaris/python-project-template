@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-{% if cookiecutter.sphinx_theme == 'sphinx-rtd-theme' -%}
-import os
-{% endif -%}
 from importlib.metadata import PackageNotFoundError, version as get_version
-{%- if cookiecutter.sphinx_theme != 'sphinx-rtd-theme' -%}
-import {{ cookiecutter.sphinx_theme|replace('-', '_') }}
-{% endif %}
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -33,23 +27,11 @@ except PackageNotFoundError:
 pygments_style = 'trac'
 templates_path = ['.']
 extlinks = {
-    'issue': ('https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/issues/%s', '#'),
-    'pr': ('https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/pull/%s', 'PR #'),
+    'issue': ('https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/issues/%s', '#%s'),
+    'pr': ('https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/pull/%s', 'PR #%s'),
 }
 
-{%- if cookiecutter.sphinx_theme != 'sphinx-rtd-theme' %}
 html_theme = '{{ cookiecutter.sphinx_theme|replace("-", "_") }}'
-html_theme_path = [{{ cookiecutter.sphinx_theme|replace('-', '_') }}.get_html_theme_path()]
-html_theme_options = {
-    'githuburl': 'https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/',
-}
-{%- else %}
-# on_rtd is whether we are on readthedocs.org
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-if not on_rtd:  # only set the theme if we're building docs locally
-    html_theme = 'sphinx_rtd_theme'
-{%- endif %}
 
 html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'

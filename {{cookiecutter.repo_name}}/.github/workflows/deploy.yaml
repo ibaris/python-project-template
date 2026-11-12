@@ -1,5 +1,5 @@
 {% raw %}
-name: Cross-Platform Build, Deploy & Release
+name: Build, Deploy & Release
 
 # -----------------------------------------------------------------------------
 # Purpose
@@ -13,7 +13,7 @@ name: Cross-Platform Build, Deploy & Release
 #       ↓
 #   read and validate release metadata
 #       ↓
-#   build protected Cython wheels for all supported platforms
+#   build release wheel
 #       ↓
 #   upload wheels to Wasabi PyPI
 #       ↓
@@ -27,13 +27,12 @@ name: Cross-Platform Build, Deploy & Release
 #
 #   resources/scripts/deploy.py
 #
-# That script creates an isolated staging copy of the repository, enables
-# Cython for the release build, compiles protected Python modules into native
-# extensions, runs cibuildwheel, verifies the resulting wheels, and copies the
-# verified artifacts into wheelhouse.
+# That script creates an isolated staging copy of the repository, builds a
+# standard Python wheel, verifies the resulting wheel, and copies the verified
+# artifact into wheelhouse.
 #
-# No Git tag or GitHub Release is created until all wheels have successfully
-# been uploaded and installation-tested.
+# No Git tag or GitHub Release is created until the wheel has successfully
+# been built, verified, and uploaded.
 #
 # pyproject.toml is the canonical source of the package version.
 #
@@ -108,22 +107,14 @@ jobs:
                   fi
 
     # -------------------------------------------------------------------------
-    # STEP 2: Build protected binary wheels for every supported operating system
+    # STEP 2: Build release wheel
     # -------------------------------------------------------------------------
     build-wheels:
-        name: Build wheels on ${{ matrix.os }}
+        name: Build release wheel
         needs:
             - prepare-release
 
-        runs-on: ${{ matrix.os }}
-
-        strategy:
-            fail-fast: false
-            matrix:
-                os:
-                    - ubuntu-latest
-                    - windows-latest
-                    - macos-latest
+        runs-on: ubuntu-latest
 
         steps:
             - name: Checkout repository
@@ -135,22 +126,20 @@ jobs:
                   python-version: "3.13"
 
             - name: Install deployment dependencies
-              run: python -m pip install --upgrade pip typer tqdm cibuildwheel
+              run: python -m pip install --upgrade pip typer tqdm build
 
-            - name: Build protected release wheels
-              env:
-                  CIBW_BUILD: "cp313-*"
+            - name: Build release wheel
               run: python resources/scripts/deploy.py --src . --output-dir wheelhouse
 
             - name: Upload wheel artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: wheels-${{ matrix.os }}
+                  name: wheels-pure-python
                   path: ./wheelhouse/*.whl
                   if-no-files-found: error
 
     # -------------------------------------------------------------------------
-    # STEP 3: Gather all compiled wheels and upload them to Wasabi PyPI
+    # STEP 3: Gather wheel artifacts and upload them to Wasabi PyPI
     # -------------------------------------------------------------------------
     upload-s3:
         name: Upload wheels to Wasabi PyPI
@@ -168,7 +157,7 @@ jobs:
             - name: Install s3pypi
               run: python -m pip install --upgrade s3pypi
 
-            - name: Download all compiled wheels
+            - name: Download wheel artifacts
               uses: actions/download-artifact@v4
               with:
                   pattern: wheels-*
@@ -227,7 +216,7 @@ jobs:
     # -------------------------------------------------------------------------
     # STEP 5: Create the Git tag and GitHub Release
     #
-    # This job runs only after every deployment verification job succeeds.
+    # This job runs after the verified wheel has been uploaded.
     # gh release create creates the missing Git tag and points it explicitly to
     # the exact main commit that triggered this workflow.
     # -------------------------------------------------------------------------
@@ -247,7 +236,7 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Download all compiled wheels
+            - name: Download wheel artifacts
               uses: actions/download-artifact@v4
               with:
                   pattern: wheels-*

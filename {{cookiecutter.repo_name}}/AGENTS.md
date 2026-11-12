@@ -6,7 +6,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 
 ## Environment
 
-Use Conda Environment `{{ cookiecutter.project_name }}`.
+Use Conda Environment `{{ cookiecutter.package_name }}`.
 
 ## Paths
 

@@ -5,7 +5,7 @@
 .pytest_cache/
 .hypothesis/
 build/
-docs/
+resources/docs/
 logs/
 tests/
 Dockerfile

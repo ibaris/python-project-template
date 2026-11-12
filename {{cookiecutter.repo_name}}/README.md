@@ -53,7 +53,30 @@ available branch names.
 
 # Documentation
 
-The documentation `code` documentation is in `build/docs`.
+Documentation sources are in `resources/docs`. Build the HTML documentation with:
+
+```cmd
+python -m pip install -e ".[docs]"
+python -m sphinx -b html resources/docs build/docs
+```
+
+Open `build/docs/index.html` to read the generated documentation.
+
+# Project structure
+
+```text
+src/
+    {{ cookiecutter.package_name }}/  # Importable package and CLI
+    .info/                          # Authors and changelog
+tests/                              # Package tests
+resources/
+    configs/                        # Application configuration examples
+    docs/                           # Sphinx documentation
+    envs/                           # Conda environment
+    images/                         # Logos and documentation images
+    scripts/                        # Release tooling
+.github/workflows/                  # CI, versioning, and releases
+```
 
 # Development
 
@@ -81,3 +104,13 @@ To include coverage:
 ```cmd
 > pytest --cov --cov-report=term-missing
 ```
+
+Check the package import rules with `lint-imports`.
+
+Build a release wheel in an isolated staging directory with:
+
+```cmd
+python resources/scripts/deploy.py --src . --output-dir wheelhouse
+```
+
+The script verifies the wheel and copies it into `wheelhouse`.

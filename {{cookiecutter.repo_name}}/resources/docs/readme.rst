@@ -6,19 +6,15 @@ Overview
 {% if cookiecutter.repo_hosting_domain == "github.com" %}
 .. start-badges
 
-.. list-table::
-    :stub-columns: 1
+{% if 'readthedocs' in cookiecutter.sphinx_docs_hosting %}
+|docs|
 
-    * - docs
-      - |docs|
-    * - tests
-{{ '' }}
-{{ '' }}
-{%- if 'readthedocs' in cookiecutter.sphinx_docs_hosting -%}
 .. |docs| image:: https://readthedocs.org/projects/{{ cookiecutter.repo_name }}/badge/?style=flat
     :target: https://{{ cookiecutter.repo_name|replace('.', '') }}.readthedocs.io/
     :alt: Documentation Status
-{%- elif 'gitlab' in cookiecutter.sphinx_docs_hosting and 'gitlab' in cookiecutter.repo_hosting_domain -%}
+{% elif 'gitlab' in cookiecutter.sphinx_docs_hosting and 'gitlab' in cookiecutter.repo_hosting_domain %}
+|docs|
+
 .. |docs| image:: https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/badges/main/pipeline.svg
     :target: https://{{ cookiecutter.repo_hosting_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name|replace('.', '') }}/commits/main
     :alt: Documentation Status
@@ -57,6 +53,11 @@ Documentation
 
 {{ cookiecutter.sphinx_docs_hosting }}
 
+Documentation sources are in ``resources/docs``. Build the HTML documentation with::
+
+    pip install -e ".[docs]"
+    python -m sphinx -b html resources/docs build/docs
+
 Development
 ===========
 
@@ -76,3 +77,11 @@ Run linting and formatting with::
 To include coverage use::
 
     pytest --cov --cov-report=term-missing
+
+Check package import rules with::
+
+    lint-imports
+
+Build a release wheel with::
+
+    python resources/scripts/deploy.py --src . --output-dir wheelhouse

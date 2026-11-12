@@ -47,7 +47,8 @@ AGENTS.md
 .project
 .pydevproject
 .idea
-.vscode
+.vscode/*
+!.vscode/settings.json
 *.iml
 *.komodoproject
 
@@ -56,7 +57,7 @@ output/*.html
 output/*/index.html
 
 # Sphinx
-docs/_build
+resources/docs/_build
 
 .DS_Store
 *~
