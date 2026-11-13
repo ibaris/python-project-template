@@ -145,7 +145,7 @@ version_replacement = "{year}.{month}.{patch}"
 "README.md" = [
     "v-{version}",
 ]
-"src/{{ cookiecutter.package_name }}/__init__.py" = [
+"src/{{ cookiecutter.package_name }}/version.py" = [
     '__version__ = "{version}"',
 ]
 "src/.info/CHANGELOG.md" = [
@@ -171,41 +171,41 @@ indent-style = "space"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "ANN401",
-    "COM812",
-    "D205",
-    "D213",
-    "D400",
-    "D401",
-    "D413",
-    "D415",
+    "blind-except",
+    "any-type",
+    "missing-trailing-comma",
+    "multi-line-summary-second-line",
+    "missing-trailing-period",
+    "non-imperative-mood",
+    "missing-blank-line-after-last-section",
+    "missing-terminal-punctuation",
     "EM",
-    "EM101",
-    "ERA001",
-    "FBT001",
-    "FBT002",
-    "PLR0913",
+    "raw-string-in-exception",
+    "commented-out-code",
+    "boolean-type-hint-positional-argument",
+    "boolean-default-value-positional-argument",
+    "too-many-arguments",
     "PTH",
-    "RET504",
-    "T201",
-    "TRY003",
-    "C901",
-    "PLR0917",
-    "PLR2004",
-    "SLF001",
-    "N812",
-    "PLR0914",
-    "PLC2701",
-    "PLW0717",
-    "N817",
-    "RUF067",
+    "unnecessary-assign",
+    "print",
+    "raise-vanilla-args",
+    "complex-structure",
+    "too-many-positional-arguments",
+    "magic-value-comparison",
+    "missing-blank-line-after-summary",
+    "camelcase-imported-as-acronym",
+    "non-empty-init-module",
+    "too-many-statements-in-try-clause",
+    "too-many-branches",
+    "too-many-statements",
+    "too-many-locals",
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"resources/docs/conf.py" = ["A001", "D100", "INP001", "Q000", "UP009", "UP030", "UP031", "UP032", "I001", "COM812"]
-"resources/scripts/*.py" = ["D100", "INP001", "UP009"]
-"tests/*.py" = ["ANN201", "D100", "D103", "INP001", "RUF048", "S101", "PERF102", "B007", "PLR2004", "N806", "PLC0415", "ANN202"]
-"src/**/__init__.py" = ["RUF067", "F401", "CPY001", "F403", "D104"]
+"resources/docs/conf.py" = ["builtin-variable-shadowing", "undocumented-public-module", "implicit-namespace-package", "bad-quotes-inline-string", "utf8-encoding-declaration", "format-literals", "printf-string-formatting", "f-string", "unsorted-imports", "missing-trailing-comma"]
+"resources/scripts/*.py" = ["undocumented-public-module", "implicit-namespace-package", "utf8-encoding-declaration"]
+"tests/*.py" = ["missing-return-type-undocumented-public-function", "undocumented-public-module", "undocumented-public-function", "implicit-namespace-package", "map-int-version-parsing", "assert", "incorrect-dict-iterator", "unused-loop-control-variable", "magic-value-comparison", "non-lowercase-variable-in-function", "import-outside-top-level", "missing-return-type-private-function"]
+"src/**/__init__.py" = ["non-empty-init-module", "unused-import", "missing-copyright-notice", "undefined-local-with-import-star", "undocumented-public-package"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

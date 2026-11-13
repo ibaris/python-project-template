@@ -1,3 +1,3 @@
 """Package metadata for {{ cookiecutter.project_name }}."""
 
-__version__ = "{{ cookiecutter.version }}"
+from .version import __version__
