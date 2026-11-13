@@ -53,11 +53,11 @@ available branch names.
 
 # Documentation
 
-Documentation sources are in `resources/docs`. Build the HTML documentation with:
+Documentation sources are in `docs`. Build the HTML documentation with:
 
 ```cmd
 python -m pip install -e ".[docs]"
-python -m sphinx -b html resources/docs build/docs
+python -m sphinx -b html docs build/docs
 ```
 
 Open `build/docs/index.html` to read the generated documentation.
@@ -68,10 +68,10 @@ Open `build/docs/index.html` to read the generated documentation.
 src/
     {{ cookiecutter.package_name }}/  # Importable package and CLI
     .info/                          # Authors and changelog
+docs/                               # Sphinx documentation
 tests/                              # Package tests
 resources/
     configs/                        # Application configuration examples
-    docs/                           # Sphinx documentation
     envs/                           # Conda environment
     images/                         # Logos and documentation images
     scripts/                        # Release tooling

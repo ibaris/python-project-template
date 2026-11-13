@@ -151,17 +151,17 @@ version_replacement = "{year}.{month}.{patch}"
 "src/.info/CHANGELOG.md" = [
     '## \[{version}\]',
 ]
-"resources/docs/conf.py" = [
+"docs/conf.py" = [
     'version = release = "{version}"',
 ]
-"resources/docs/readme.rst" = [
+"docs/readme.rst" = [
     '{{ cookiecutter.project_name }} \[v-{version}\]',
 ]
 
 
 [tool.ruff]
 line-length = 140
-extend-exclude = ["resources/docs/conf.py", "resources/scripts/deploy.py"]
+extend-exclude = ["docs/conf.py", "resources/scripts/deploy.py"]
 preview = true
 
 [tool.ruff.format]
@@ -202,7 +202,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"resources/docs/conf.py" = ["builtin-variable-shadowing", "undocumented-public-module", "implicit-namespace-package", "bad-quotes-inline-string", "utf8-encoding-declaration", "format-literals", "printf-string-formatting", "f-string", "unsorted-imports", "missing-trailing-comma"]
+"docs/conf.py" = ["builtin-variable-shadowing", "undocumented-public-module", "implicit-namespace-package", "bad-quotes-inline-string", "utf8-encoding-declaration", "format-literals", "printf-string-formatting", "f-string", "unsorted-imports", "missing-trailing-comma"]
 "resources/scripts/*.py" = ["undocumented-public-module", "implicit-namespace-package", "utf8-encoding-declaration"]
 "tests/*.py" = ["missing-return-type-undocumented-public-function", "undocumented-public-module", "undocumented-public-function", "implicit-namespace-package", "map-int-version-parsing", "assert", "incorrect-dict-iterator", "unused-loop-control-variable", "magic-value-comparison", "non-lowercase-variable-in-function", "import-outside-top-level", "missing-return-type-private-function"]
 "src/**/__init__.py" = ["non-empty-init-module", "unused-import", "missing-copyright-notice", "undefined-local-with-import-star", "undocumented-public-package"]

@@ -1,10 +1,10 @@
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 version: 2
 sphinx:
-  configuration: resources/docs/conf.py
+  configuration: docs/conf.py
 formats: all
 python:
   install:
-    - requirements: resources/docs/requirements.txt
+    - requirements: docs/requirements.txt
     - method: pip
       path: .

@@ -53,10 +53,10 @@ Documentation
 
 {{ cookiecutter.sphinx_docs_hosting }}
 
-Documentation sources are in ``resources/docs``. Build the HTML documentation with::
+Documentation sources are in ``docs``. Build the HTML documentation with::
 
     pip install -e ".[docs]"
-    python -m sphinx -b html resources/docs build/docs
+    python -m sphinx -b html docs build/docs
 
 Development
 ===========

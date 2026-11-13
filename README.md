@@ -31,13 +31,13 @@ For example, choose `Example Library` as the project name to generate an `exampl
             CHANGELOG.md
     tests/
         test_<package_name>.py
+    docs/
+        conf.py
+        index.rst
+        reference/
+        requirements.txt
     resources/
         configs/
-        docs/
-            conf.py
-            index.rst
-            reference/
-            requirements.txt
         envs/
             <package_name>.yml
         images/
@@ -47,7 +47,7 @@ For example, choose `Example Library` as the project name to generate an `exampl
     .vscode/settings.json
 ```
 
-Add application modules under `src/<package_name>` and corresponding tests under `tests`. Keep documentation, environment definitions, example configurations, images, and maintenance scripts under `resources`. Files needed at runtime belong inside the importable package and must be declared as package data in `pyproject.toml`.
+Add application modules under `src/<package_name>` and corresponding tests under `tests`. Keep documentation under `docs`. Keep environment definitions, example configurations, images, and maintenance scripts under `resources`. Files needed at runtime belong inside the importable package and must be declared as package data in `pyproject.toml`.
 
 ## Develop a generated project
 
@@ -60,7 +60,7 @@ python -m pip install -e ".[dev,docs]"
 python -m pytest
 lint-imports
 python -m ruff check .
-python -m sphinx -b html resources/docs build/docs
+python -m sphinx -b html docs build/docs
 ```
 
 The import rule prevents the CLI from importing `__main__`, keeping the console script and `python -m <package_name>` entrypoints reusable. Add package-specific import contracts as the library grows.
