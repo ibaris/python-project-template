@@ -200,6 +200,7 @@ ignore = [
     "too-many-statements",
     "too-many-locals",
     "property-docstring-starts-with-verb",
+    "raise-within-try",
 ]
 
 [tool.ruff.lint.per-file-ignores]
